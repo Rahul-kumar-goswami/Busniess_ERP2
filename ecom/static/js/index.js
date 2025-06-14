@@ -64,6 +64,20 @@ function renderEmployeeCharts() {
       plugins: {
         legend: { display: false },
         tooltip: { enabled: false },
+        beforeDraw: function (chart) {
+          var width = chart.width,
+            height = chart.height,
+            ctx = chart.ctx;
+          ctx.restore();
+          var fontSize = (height / 114).toFixed(2);
+          ctx.font = fontSize + "em sans-serif";
+          ctx.textBaseline = "middle";
+          var text = attendanceValue.toFixed(1) + "%";
+          var textX = Math.round((width - ctx.measureText(text).width) / 2);
+          var textY = height / 1.5;
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        },
       },
     },
   });
