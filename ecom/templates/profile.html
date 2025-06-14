@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #181f2a;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      background: #232b39;
+      border-radius: 12px;
+      padding: 32px 24px 24px 24px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #2b7cff;
+      margin-right: 32px;
+      background: #222;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-info h2 {
+      margin: 0 0 6px 0;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .profile-info .bio {
+      color: #b3b3b3;
+      font-size: 1.1rem;
+    }
+
+    .profile-info .location {
+      color: #7da5e6;
+      font-size: 1rem;
+    }
+
+    .social-icons {
+      position: absolute;
+      right: 24px;
+      top: 24px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .social-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #2b7cff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      text-decoration: none;
+    }
+
+    .edit-btn {
+      background: #2b7cff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 22px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-left: 18px;
+    }
+
+    .section {
+      background: #232b39;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .info-label {
+      color: #7da5e6;
+      font-size: 0.98rem;
+    }
+
+    .info-value {
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+    }
+
+    .edit-form input,
+    .edit-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #181f2a;
+      color: #fff;
+      border: 1px solid #2b7cff;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .edit-form textarea {
+      min-height: 54px;
+    }
+
+    .edit-form label {
+      color: #7da5e6;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .form-actions {
+      margin-top: 8px;
+    }
+
+    .save-btn {
+      background: #27ae60;
+      color: #fff;
+      border: none;
+      padding: 8px 22px;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .cancel-btn {
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 700px) {
+
+      .profile-header,
+      .section {
+        padding: 14px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .avatar {
+        width: 64px;
+        height: 64px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <button class="edit-btn" style="position: absolute; top: 24px; left: 24px; z-index: 10;"
+      onclick="window.history.back()">
+      &#8592; BACK
+    </button>
+
+
+    <!-- PROFILE HEADER -->
+    <div class="profile-header">
+      <img class="avatar" id="profile-img"
+        src="{% if user.image %}{{ user.image.url }}{% else %}{% static 'default-avatar.png' %}{% endif %}"
+        alt="Profile Image">
+      <div class="profile-info">
+        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+        <div class="bio">{{ user.bio|default:"Team Manager" }}</div>
+        <div class="location">{{ user.country|default:"Location" }}</div>
+      </div>
+      <div class="social-icons">
+        <a href="#" class="social-icon">f</a>
+        <a href="#" class="social-icon">t</a>
+        <a href="#" class="social-icon">in</a>
+        <a href="#" class="social-icon">ig</a>
+        <button class="edit-btn" onclick="toggleEdit()">Edit</button>
+      </div>
+    </div>
+
+    <div class="section" id="profile-view">
+      <div class="section-title">Personal Information</div>
+      <div class="info-grid">
+        <div>
+          <div class="info-label">First Name</div>
+          <div class="info-value">{{ user.first_name }}</div>
+        </div>
+        <div>
+          <div class="info-label">Last Name</div>
+          <div class="info-value">{{ user.last_name }}</div>
+        </div>
+        <div>
+          <div class="info-label">Email address</div>
+          <div class="info-value">{{ user.email }}</div>
+        </div>
+        <div>
+          <div class="info-label">Phone</div>
+          <div class="info-value">{{ user.phone|default:"Not provided" }}</div>
+        </div>
+        <div style="grid-column: 1 / span 2;">
+          <div class="info-label">Bio</div>
+          <div class="info-value">{{ user.bio|default:"Not provided" }}</div>
+        </div>
+      </div>
+      <div class="section-title" style="margin-top:32px;">Address</div>
+      <div class="info-grid">
+        <div>
+          <div class="info-label">Country</div>
+          <div class="info-value">{{ user.country|default:"Not provided" }}</div>
+        </div>
+        <div>
+          <div class="info-label">City/State</div>
+          <div class="info-value">{{ user.city_state|default:"Not provided" }}</div>
+        </div>
+        <div>
+          <div class="info-label">Postal Code</div>
+          <div class="info-value">{{ user.postal_code|default:"Not provided" }}</div>
+        </div>
+        <div>
+          <div class="info-label">TAX ID</div>
+          <div class="info-value">{{ user.tax_id|default:"Not provided" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT FORM -->
+    <form id="profile-edit" class="edit-form section" method="post" enctype="multipart/form-data" style="display:none;">
+      {% csrf_token %}
+      <div class="section-title">Personal Information</div>
+      <div class="info-grid">
+        <div>
+          <label>First Name</label>
+          <input type="text" name="first_name" value="{{ user.first_name }}" required>
+        </div>
+        <div>
+          <label>Last Name</label>
+          <input type="text" name="last_name" value="{{ user.last_name }}" required>
+        </div>
+        <div>
+          <label>Email address</label>
+          <input type="email" name="email" value="{{ user.email }}" required>
+        </div>
+        <div>
+          <label>Phone</label>
+          <input type="text" name="phone" value="{{ user.phone }}">
+        </div>
+        <div style="grid-column: 1 / span 2;">
+          <label>Bio</label>
+          <textarea name="bio">{{ user.bio }}</textarea>
+        </div>
+        <div style="grid-column: 1 / span 2;">
+          <label>Profile Image</label>
+          <input type="file" name="image" accept="image/*" onchange="previewImg(event)">
+        </div>
+      </div>
+      <div class="section-title" style="margin-top:32px;">Address</div>
+      <div class="info-grid">
+        <div>
+          <label>Country</label>
+          <input type="text" name="country" value="{{ user.country }}">
+        </div>
+        <div>
+          <label>City/State</label>
+          <input type="text" name="city_state" value="{{ user.city_state }}">
+        </div>
+        <div>
+          <label>Postal Code</label>
+          <input type="text" name="postal_code" value="{{ user.postal_code }}">
+        </div>
+        <div>
+          <label>TAX ID</label>
+          <input type="text" name="tax_id" value="{{ user.tax_id }}">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="save-btn">Save</button>
+        <button type="button" class="cancel-btn" onclick="toggleEdit(true)">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggleEdit(cancel = false) {
+      var view = document.getElementById('profile-view');
+      var edit = document.getElementById('profile-edit');
+      if (edit.style.display === 'none' && !cancel) {
+        view.style.display = 'none';
+        edit.style.display = '';
+      } else {
+        view.style.display = '';
+        edit.style.display = 'none';
+      }
+    }
+    function previewImg(event) {
+      var output = document.getElementById('profile-img');
+      output.src = URL.createObjectURL(event.target.files[0]);
+    }
+  </script>
+</body>
+
+</html>
